@@ -320,13 +320,18 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
         _fbxMaterial = FbxSurfacePhong::Create(pSdkManager, mat->getName().c_str());
         if (_fbxMaterial)
         {
+            _fbxMaterial->SetName(mat->getName().c_str());
             _fbxMaterial->DiffuseFactor.Set(1);
             _fbxMaterial->Diffuse.Set(FbxDouble3(
                 diffuse.x(),
                 diffuse.y(),
                 diffuse.z()));
 
-            _fbxMaterial->TransparencyFactor.Set(transparency);
+            if (transparency > 1e-6)
+            {
+                _fbxMaterial->TransparentColor.Set(FbxDouble3(1.0, 1.0, 1.0));
+                _fbxMaterial->TransparencyFactor.Set(transparency);
+            }
 
             _fbxMaterial->Ambient.Set(FbxDouble3(
                 ambient.x(),
